@@ -4,6 +4,8 @@ This project is meant to be a software that reads and analyse the data from an F
 At the moment only the plotting function of the reflectivity and trnasmittivity are present.
 
 The script reads data from a csv or a standard tab/space file, divides the signal and a comparison set of data for a reference and plot the result as a function of the wavelength. There is the option to provide a background measurement to subtract both for the signal and the reference.
+The script is now divided into two files: one for the main and variable inizialization and another one for the functions.
+All the functions are now self-sustaining: everything is more flexible and definetly more ordered.
 
 The script can be used inserting the asked parameters (file positions, figure properties...) and making it run as main.
 
