@@ -18,14 +18,14 @@ Background = True  # If True subtracts a background from the data
 Comp = False  # If True takes a second set of data as comparison
 
 # Definition of the path
-Location = '/home/mmonti/Documents/Phd/'
+Location = '/home/'
 # These define the position of the files
 dataLocation = Location + 'Data/'
 # This is the subpath of the raw data
 resLocation = Location + 'Results/'  # This is the subpath of the results
 fileSep = '/'   # This is the path divider
 
-sample = 'LSMO'  # Names that define the position of the data:
+sample = ''  # Names that define the position of the data:
 # they are divided to allow easy modifications
 month = 'February'
 year = '2017'
@@ -36,15 +36,15 @@ path = dataLocation + sample + "/" + month + year + "/" + date + "/"
 # Names of the files to analyse
 
 # Sample we are actually interested in:
-nameSignal = 'LSMO_Sidiode_QuartzVIS_256sans_1cm-1_4mm.dpt'
+nameSignal = 'signal.csv'
 # Comparison file (substrate for ex):
-nameComp = 'LAO refl_NIR_CaF2_InGaAs_256scan_1cm-1_1mm_1.dpt'
+nameComp = 'sub.csv'
 # Reference:
-nameRef = 'refAu_Sidiode_QuartzVIS_256sans_1cm-1_4mm.dpt'
+nameRef = 'ref.csv'
 # Background measurement:
-nameBack = 'Holder_Sidiode_QuartzVIS_256sans_1cm-1_4mm.dpt'
+nameBack = 'back.csv'
 # Background of the reference:
-nameBackRef = 'Hole_Sidiode_QuartzVIS_256sans_1cm-1_4mm.dpt'
+nameBackRef = 'backref.csv'
 
 
 Type = 'tab'  # Separator of the data: csv or tab or space
@@ -54,7 +54,7 @@ Type = 'tab'  # Separator of the data: csv or tab or space
 measurement = 'refl'  # Which type of measurement are we performing
 
 # Definition of the parameters of the figure
-legendSignal = 'LSMO'  # Legend entries
+legendSignal = ''  # Legend entries
 legendComp = ''
 
 axisBounds = [0.45, 1.11, 0, 40]   # Axes limits
@@ -67,7 +67,7 @@ shapeComp = 'r'
 xlabel = '$\lambda(\mu m)$'
 ylabel = '$r(\%)$'
 
-title = 'LSMO reflectivity'  # Title of the figure
+title = ' reflectivity'  # Title of the figure
 
 save = True  # If true saves the figure
 
