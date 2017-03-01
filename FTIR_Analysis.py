@@ -137,9 +137,4 @@ def main():
 
 
 if __name__ == '__main__':
-    # Ridefinire tutte le funzioni del main in modo da parametrizzare tutto
-    # cosi' che le funzioni diventino usabili per davvero, togliedno
-    # riferimenti all'inizio dello script e lasciarli solo nel main
-    # gia' che ci sono mi sposto tutte le funzioni in un altro file in modo
-    # da fare anche meno casino
     main()
