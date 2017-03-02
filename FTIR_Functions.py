@@ -4,12 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as sig
 
-# could be nice to add functions to:
-# normalize (to a value or to the maximum)
-# find peaks
-# fit peaks with something?
-
-
 def Converter(xIn, yIn, xUnit, yUnit):
     # This function converts the x in \mu m (much better)
     # a modification of the intensity is also possible
@@ -118,7 +112,6 @@ def Normalizer(spectrum, default, noisy, theoMax):
             out = np.nanmax(maximaVal)
             return out
         else:
-            #print 'WTF? I don\'t know how the noise is!'
             sys.exit('WTF? I don\'t know how the noise is!')
     elif default < 0:
         print 'Damn! Normalization value is negative!'
