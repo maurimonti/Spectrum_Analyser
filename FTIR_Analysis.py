@@ -18,14 +18,14 @@ Background = True  # If True subtracts a background from the data
 Comp = True  # If True takes a second set of data as comparison
 
 # Definition of the path
-Location = '/home/mmonti/Documents/Phd/'
+Location = '/home/'
 # These define the position of the files
 dataLocation = Location + 'Data/'
 # This is the subpath of the raw data
 resLocation = Location + 'Results/'  # This is the subpath of the results
 fileSep = '/'   # This is the path divider
 
-sample = 'LSMO'  # Names that define the position of the data:
+sample = ''  # Names that define the position of the data:
 # they are divided to allow easy modifications
 month = 'February'
 year = '2017'
@@ -36,15 +36,15 @@ path = dataLocation + sample + "/" + month + year + "/" + date + "/"
 # Names of the files to analyse
 
 # Sample we are actually interested in:
-nameSignal = 'LSMO_refl_NIR_CaF2_InGaAs_256scan_1cm-1_1mm_1.dpt'
+nameSignal = 'Signal.dpt'
 # Comparison file (substrate for ex):
-nameComp = 'LAO refl_NIR_CaF2_InGaAs_256scan_1cm-1_1mm_1.dpt'
+nameComp = 'Comp.dpt'
 # Reference:
-nameRef = 'Au_refl_NIR_CaF2_InGaAs_256scan_1cm-1_1mm_1.dpt'
+nameRef = 'ref.dpt'
 # Background measurement:
-nameBack = 'Holder refl_NIR_CaF2_InGaAs_256scan_1cm-1_1mm_1.dpt'
+nameBack = 'Back.dpt'
 # Background of the reference:
-nameBackRef = 'Hole refl_NIR_CaF2_InGaAs_256scan_1cm-1_1mm_1.dpt'
+nameBackRef = 'BackRef.dpt'
 
 
 Type = 'tab'  # Separator of the data: csv or tab or space
@@ -52,12 +52,13 @@ Type = 'tab'  # Separator of the data: csv or tab or space
 
 # Properties of the measurement
 measurement = 'refl'  # Which type of measurement are we performing
-xUnit = 'cm1'  # Flag for the unit to use for the x axis
-yUnit = ''
-plotType = 'logx'
+xUnit = 'cm1'  # Flag for the unit to use for the x axis:
+# cm1 for cm**-1, nm for nanometers, micro for micrometers, eV for electronvolt
+yUnit = '' # Flag for the unit of the y axis: not implemented yet
+plotType = 'logx'# which type of plot: logx, logy, loglog or normal
 
 # Definition of the parameters of the figure
-legendSignal = 'LSMO'  # Legend entries
+legendSignal = ''  # Legend entries
 legendComp = ''
 
 axisBounds = [5000, 20000, -5, 80]   # Axes limits
@@ -66,7 +67,7 @@ shapeSignal = 'b'  # Colour and shape of the figure symbol
 shapeComp = 'r'
 
 # xlabel = '$k(cm^{-1})$'
-# Labels of the figure, at the moment only micrometers are allowed
+# Labels of the figure
 xlabel = '$\lambda(\mu m)$'
 ylabel = '$r(\%)$'
 
@@ -104,7 +105,6 @@ def main():
                              Background)
 
     spectrumConverted = ftir.Converter(spectrum[0], spectrum[1], xUnit, yUnit)
-    ftir.Normalizer(spectrumConverted[1], 0, False, 50)
 
     plt.figure(1)
 
