@@ -15,36 +15,36 @@ import FTIR_Functions as ftir
 # ## Global variables definitions## #
 
 Background = True  # If True subtracts a background from the data
-Comp = False  # If True takes a second set of data as comparison
+Comp = True  # If True takes a second set of data as comparison
 
 # Definition of the path
-Location = '/home/'
+Location = '/home/mmonti/Documents/Phd/'
 # These define the position of the files
 dataLocation = Location + 'Data/'
 # This is the subpath of the raw data
 resLocation = Location + 'Results/'  # This is the subpath of the results
 fileSep = '/'   # This is the path divider
 
-sample = ''  # Names that define the position of the data:
+sample = 'LSMO'  # Names that define the position of the data:
 # they are divided to allow easy modifications
 month = 'February'
 year = '2017'
-date = '24Feb'
+date = '22Feb'
 # The path can be directly modified in case
 path = dataLocation + sample + "/" + month + year + "/" + date + "/"
 
 # Names of the files to analyse
 
 # Sample we are actually interested in:
-nameSignal = 'signal.csv'
+nameSignal = 'LSMO_refl_NIR_CaF2_InGaAs_256scan_1cm-1_1mm_1.dpt'
 # Comparison file (substrate for ex):
-nameComp = 'sub.csv'
+nameComp = 'LAO refl_NIR_CaF2_InGaAs_256scan_1cm-1_1mm_1.dpt'
 # Reference:
-nameRef = 'ref.csv'
+nameRef = 'Au_refl_NIR_CaF2_InGaAs_256scan_1cm-1_1mm_1.dpt'
 # Background measurement:
-nameBack = 'back.csv'
+nameBack = 'Holder refl_NIR_CaF2_InGaAs_256scan_1cm-1_1mm_1.dpt'
 # Background of the reference:
-nameBackRef = 'backref.csv'
+nameBackRef = 'Hole refl_NIR_CaF2_InGaAs_256scan_1cm-1_1mm_1.dpt'
 
 
 Type = 'tab'  # Separator of the data: csv or tab or space
@@ -52,12 +52,15 @@ Type = 'tab'  # Separator of the data: csv or tab or space
 
 # Properties of the measurement
 measurement = 'refl'  # Which type of measurement are we performing
+xUnit = 'cm1'  # Flag for the unit to use for the x axis
+yUnit = ''
+plotType = 'logx'
 
 # Definition of the parameters of the figure
-legendSignal = ''  # Legend entries
+legendSignal = 'LSMO'  # Legend entries
 legendComp = ''
 
-axisBounds = [0.45, 1.11, 0, 40]   # Axes limits
+axisBounds = [5000, 20000, -5, 80]   # Axes limits
 
 shapeSignal = 'b'  # Colour and shape of the figure symbol
 shapeComp = 'r'
@@ -67,9 +70,9 @@ shapeComp = 'r'
 xlabel = '$\lambda(\mu m)$'
 ylabel = '$r(\%)$'
 
-title = ' reflectivity'  # Title of the figure
+title = 'LSMO reflectivity'  # Title of the figure
 
-save = True  # If true saves the figure
+save = False  # If true saves the figure
 
 figPath = (resLocation + fileSep +
            sample + fileSep +
@@ -97,29 +100,28 @@ def main():
     dataBack = ftir.ReadFTIR(path + nameBack, Type)
     dataBackRef = ftir.ReadFTIR(path + nameBackRef, Type)
 
-    dataSignal = ftir.Converter(dataSignal[0], dataSignal[1])
-    dataRef = ftir.Converter(dataRef[0], dataRef[1])
-    dataBack = ftir.Converter(dataBack[0], dataBack[1])
-    dataBackRef = ftir.Converter(dataBackRef[0], dataBackRef[1])
-
     spectrum = ftir.Computer(dataSignal, dataRef, dataBack, dataBackRef,
                              Background)
 
-    plt.figure(1)
-    plt.axis(axisBounds)
-    plt.title(title, fontsize=24)
-    plt.xlabel(xlabel, fontsize=14)
-    plt.ylabel(ylabel, fontsize=14)
-    plt.tick_params(axis='both', which='major', labelsize=14)
+    spectrumConverted = ftir.Converter(spectrum[0], spectrum[1], xUnit, yUnit)
+    ftir.Normalizer(spectrumConverted[1], 0, False, 50)
 
-    ftir.plotter(spectrum[0], spectrum[1], shapeSignal, legendSignal)
+    plt.figure(1)
+
+    ftir.plotter(spectrumConverted[0], spectrumConverted[1],
+                 shapeSignal, legendSignal, plotType)
 
     if Comp is True:
         dataComp = ftir.ReadFTIR(path + nameComp, Type)
-        dataComp = ftir.Converter(dataComp[0], dataComp[1])
+
         spectrum = ftir.Computer(dataComp, dataRef, dataBack, dataBackRef,
                                  Background)
-        ftir.plotter(spectrum[0], spectrum[1], shapeComp, legendComp)
+
+        spectrumConverted = ftir.Converter(spectrum[0], spectrum[1],
+                                           xUnit, yUnit)
+
+        ftir.plotter(spectrumConverted[0], spectrumConverted[1],
+                     shapeComp, legendComp, plotType)
 
     if save is True:
         plt.savefig(figPath + figName, dpi=None, facecolor='w', edgecolor='w',
@@ -127,14 +129,17 @@ def main():
                     transparent=False, bbox_inches=None, pad_inches=0.1,
                     frameon=None)
 
+    plt.axis(axisBounds)
+    plt.title(title, fontsize=24)
+    plt.xlabel(xlabel, fontsize=14)
+    plt.ylabel(ylabel, fontsize=14)
+    plt.tick_params(axis='both', which='major', labelsize=14)
     plt.legend()
     plt.show()
 
-    # plt.figure(2)
-    # plt.plot(dataRef[0],dataRef[1], dataSignal[0], dataSignal[1])
-    # plt.show()
     return 1
 
 
 if __name__ == '__main__':
+    # plotting also the raw signals
     main()

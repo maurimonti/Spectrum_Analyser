@@ -2,13 +2,34 @@ import csv
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.signal as sig
+
+# could be nice to add functions to:
+# normalize (to a value or to the maximum)
+# find peaks
+# fit peaks with something?
 
 
-def Converter(xIn, yIn):
+def Converter(xIn, yIn, xUnit, yUnit):
     # This function converts the x in \mu m (much better)
     # a modification of the intensity is also possible
-    xOut = [x**(-1) * 10000 for x in xIn]
-    yOut = yIn
+    if xUnit is 'micro':
+        xOut = [x**(-1) * 10000 for x in xIn]
+
+    elif xUnit is 'nm':
+        xOut = [x**(-1) * 10000000 for x in xIn]
+
+    elif xUnit is 'eV':
+        xOut = [x * 1.23984 * 0.0001 for x in xIn]
+
+    elif xUnit is 'cm1':
+        xOut = [x for x in xIn]
+
+    else:
+        print 'damn! Unit of measure not recognized or not implemented!\n'
+        sys.exscholarit()
+
+    yOut = [y * 100 for y in yIn]
     out = np.array([xOut, yOut])
 
     return out
@@ -47,7 +68,7 @@ def ReadFTIR(pathFile, sep):
                     inten.append(float(y))
 
     except:
-        print 'damn! file type not recognized!'
+        print 'damn! file type not recognized!\n'
         sys.exscholarit()
 
     data = np.array([numeri, inten])
@@ -65,12 +86,44 @@ def Computer(data, dataRef, dataBack, dataBackRef, Back):
         spectrum = data[1]
         spectrumRef = dataRef[1]
 
-    ratio = spectrum / spectrumRef * 100
+    ratio = spectrum / spectrumRef
     return data[0], ratio
 
 
-def plotter(wavelength, spectrum, shape, name):
+def plotter(wavelength, spectrum, shape, name, flag):
     # This function plots the data
-    plt.plot(wavelength, spectrum, shape, label=name)
+    if flag is 'normal':
+        figure = plt.plot(wavelength, spectrum, shape, label=name)
+    elif flag is 'logx':
+        figure = plt.semilogx(wavelength, spectrum, shape, label=name)
+    elif flag is 'logy':
+        figure = plt.semilogy(wavelength, spectrum, shape, label=name)
+    elif flag is 'loglog':
+        figure = plt.loglog(wavelength, spectrum, shape, label=name)
+    else:
+        print 'damn! plot type non recognized!\n'
 
-    return plt.figure(1)
+    return figure
+
+
+def Normalizer(spectrum, default, noisy, theoMax):
+    if default is 0:
+        if noisy is False:
+            maxVal = np.nanmax(spectrum)
+            out = spectrum / maxVal
+            return out
+        elif noisy is True:
+            maximaVal = spectrum[sig.argrelmax(spectrum)]
+            maximaVal = maximaVal[np.where(maximaVal < theoMax)]
+            out = np.nanmax(maximaVal)
+            return out
+        else:
+            #print 'WTF? I don\'t know how the noise is!'
+            sys.exit('WTF? I don\'t know how the noise is!')
+    elif default < 0:
+        print 'Damn! Normalization value is negative!'
+        sys.exit('Damn! Normalization value is negative!')
+
+    else:
+        out = spectrum / default
+        return out
