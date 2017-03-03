@@ -1,4 +1,4 @@
-# This script is meant to be a simple software that reads plots and analyse
+ This script is meant to be a simple software that reads plots and analyse
 # the data from the FTIR
 
 # The name Signal refers to the sample we are interested in,
@@ -18,7 +18,7 @@ Background = True  # If True subtracts a background from the data
 Comp = True  # If True takes a second set of data as comparison
 
 # Definition of the path
-Location = '/home/'
+Location = ''
 # These define the position of the files
 dataLocation = Location + 'Data/'
 # This is the subpath of the raw data
@@ -40,7 +40,7 @@ nameSignal = 'Signal.dpt'
 # Comparison file (substrate for ex):
 nameComp = 'Comp.dpt'
 # Reference:
-nameRef = 'ref.dpt'
+nameRef = 'Ref.dpt'
 # Background measurement:
 nameBack = 'Back.dpt'
 # Background of the reference:
@@ -51,11 +51,18 @@ Type = 'tab'  # Separator of the data: csv or tab or space
 
 
 # Properties of the measurement
-measurement = 'refl'  # Which type of measurement are we performing
+measurement = 'refl'
 xUnit = 'cm1'  # Flag for the unit to use for the x axis:
-# cm1 for cm**-1, nm for nanometers, micro for micrometers, eV for electronvolt
-yUnit = '' # Flag for the unit of the y axis: not implemented yet
-plotType = 'logx'# which type of plot: logx, logy, loglog or normal
+# cm1 for cm**-1,
+# nm for nanometers
+# micro for micrometers ($\mu m$)
+# eV for electronvolts
+yUnit = ''  # flag for the y axis unit not implemented yet!
+plotType = 'logx'  # flag for the plot type:
+# normal for a normal linear plot,
+# logx for a semilogx plot
+# logy for a semilogy plot
+# loglog for a log log plot
 
 # Definition of the parameters of the figure
 legendSignal = ''  # Legend entries
@@ -66,12 +73,12 @@ axisBounds = [5000, 20000, -5, 80]   # Axes limits
 shapeSignal = 'b'  # Colour and shape of the figure symbol
 shapeComp = 'r'
 
-# xlabel = '$k(cm^{-1})$'
-# Labels of the figure
-xlabel = '$\lambda(\mu m)$'
+# Labels of the figure will be soon replace by an automatic label dependent
+# on the unit chosen
+xlabel = '$k(cm^{-1})$'
 ylabel = '$r(\%)$'
 
-title = 'LSMO reflectivity'  # Title of the figure
+title = 'reflectivity'  # Title of the figure
 
 save = False  # If true saves the figure
 
