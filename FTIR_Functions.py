@@ -1,12 +1,22 @@
-import csv
-import sys
-import numpy as np
-import matplotlib.pyplot as plt
-import scipy.signal as sig
+# Script containing all the functions needed for the FTIR_Analysis script
+# for now it just reds file, compute the spectrum, converts it and plots the
+# data. Working on implementing also a peak finding or peak fitting
 
-def Converter(xIn, yIn, xUnit, yUnit):
-    # This function converts the x in \mu m (much better)
-    # a modification of the intensity is also possible
+# Modules
+import csv  # read csv easily
+import sys  # system methods, used for exit
+import numpy as np
+import matplotlib.pyplot as plt  # plotting
+import scipy.signal as sig  # library with signal analysis (find peaks, etc.)
+import scipy.optimize as opt  # contains fitting and minimization tools
+
+
+def Converter(xIn, yIn, xUnit='cm1', yUnit):
+    # This function converts the x in a chosen unit that depends on the xUnit
+    # value. At the moment the implementation of the y unit choice is not
+    # implemented.
+    # Returns the converted data
+
     if xUnit is 'micro':
         xOut = [x**(-1) * 10000 for x in xIn]
 
@@ -20,8 +30,7 @@ def Converter(xIn, yIn, xUnit, yUnit):
         xOut = [x for x in xIn]
 
     else:
-        print 'damn! Unit of measure not recognized or not implemented!\n'
-        sys.exscholarit()
+        sys.exit('damn! Unit of measure not recognized or not implemented!')
 
     yOut = [y * 100 for y in yIn]
     out = np.array([xOut, yOut])
@@ -29,8 +38,9 @@ def Converter(xIn, yIn, xUnit, yUnit):
     return out
 
 
-def Opener(pathFile, sep):
-    # this function open the file and put them into a list
+def Opener(pathFile, sep='tab'):
+    # this function open the file and put the data into a list
+
     dati = []
     if sep is 'csv':
         with open(pathFile) as f:
@@ -46,7 +56,7 @@ def Opener(pathFile, sep):
     return dati
 
 
-def ReadFTIR(pathFile, sep):
+def ReadFTIR(pathFile, sep='tab'):
     # This function reads the file of the FTIR and return them in an array
 
     numeri = []
@@ -62,15 +72,19 @@ def ReadFTIR(pathFile, sep):
                     inten.append(float(y))
 
     except:
-        print 'damn! file type not recognized!\n'
-        sys.exscholarit()
+        sys.exit('damn! file type not recognized!')
 
     data = np.array([numeri, inten])
 
     return data
 
 
-def Computer(data, dataRef, dataBack, dataBackRef, Back):
+def Computer(data, dataRef, dataBack, dataBackRef, Back=0):
+    # This function computes the reflectivity spectrum dividing the raw data
+    # for a given reference. If Back is True also subtract a given background
+    # to compensate for a non good alignment or for a non good aperture size.
+    # Returns the wavenumber and the spectrum
+
     ratio = []
     if Back is True:
         spectrum = data[1] - dataBack[1]
@@ -84,8 +98,11 @@ def Computer(data, dataRef, dataBack, dataBackRef, Back):
     return data[0], ratio
 
 
-def plotter(wavelength, spectrum, shape, name, flag):
-    # This function plots the data
+def plotter(wavelength, spectrum, shape, name, flag='normal'):
+    # This function plots the data, depending on the value of flag changes
+    # the plot type.
+    # Returns the plot
+
     if flag is 'normal':
         figure = plt.plot(wavelength, spectrum, shape, label=name)
     elif flag is 'logx':
@@ -95,28 +112,73 @@ def plotter(wavelength, spectrum, shape, name, flag):
     elif flag is 'loglog':
         figure = plt.loglog(wavelength, spectrum, shape, label=name)
     else:
-        print 'damn! plot type non recognized!\n'
+        sys.exit('damn! plot type non recognized!')
 
     return figure
 
 
-def Normalizer(spectrum, default, noisy, theoMax):
+def Normalizer(spectrum, default=0, noisy=False, theoMax=101):
+    # Normalization of the data, to a default value called default. If 0 the
+    # data will be divided for the maximum. Another parameter noisy can be
+    # called if the data are not smooth and deletes all the values that are
+    # above a theoretical maximum theoMax.
+    # It returns the normalized spectrum
+
     if default is 0:
         if noisy is False:
             maxVal = np.nanmax(spectrum)
             out = spectrum / maxVal
             return out
+
         elif noisy is True:
             maximaVal = spectrum[sig.argrelmax(spectrum)]
             maximaVal = maximaVal[np.where(maximaVal < theoMax)]
-            out = np.nanmax(maximaVal)
+            maxVal = np.nanmax(maximaVal)
+            out = spectrum / maxVal
             return out
+
         else:
             sys.exit('WTF? I don\'t know how the noise is!')
+
     elif default < 0:
-        print 'Damn! Normalization value is negative!'
         sys.exit('Damn! Normalization value is negative!')
 
     else:
         out = spectrum / default
         return out
+
+
+def FindPeaks(freq, spectrum, widths, Top=101):
+    # Uses find_peaks_cwt of the Scipy.signal library to find peaks, then
+    # returns the peak positions and heights. Top is needed to delete all the
+    # Nonphysical peaks that are above the maximum possible value
+
+    cleanedFreq = freq[np.where(spectrum < Top)]
+    cleanedSpectrum = spectrum[np.where(spectrum < Top)]
+
+    idx = sig.find_peaks_cwt(cleanedSpectrum, widths)
+
+    peaksPos = cleanedFreq[idx]
+    peaksHeight = cleanedSpectrum[idx]
+
+    return peaksPos, peaksHeight
+
+
+def FitPeaks(freq, spectrum, shape, peakPos=0, width, guess, Top=101):
+    # NOT IMPLEMENTED
+    # Tries to fit the peaks found, can work on given peaks or automatically
+    # search for peaks
+
+    if shape is 'gaussian':
+        return 0
+    elif shape is 'lorentzian':
+        return 0
+    else:
+        return 0
+
+    if peakPos is 0:
+        # call FindPeaks
+        return 0
+    elif peakPos > 0:
+        # Find a way to extract only peaks from data
+        return 0
