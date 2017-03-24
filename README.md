@@ -1,14 +1,13 @@
-# FTIR_Analysis
+# Spectrum_Analyser
 
-This project is meant to be a software that reads and analyse the data from an FTIR spectrometer, however can be also used to read and plot data from any source (if the correct formatting is provided).
+This project has been renewed starting from the previous project FTIR_Analisys.
+This software is a program that reads some data, Fourier transform them if necessary, then computes the transmission/reflection and plots the outcome (and saves all the results).
 
-The script reads data from a csv or a standard tab/space file, divides the signal and a comparison set of data for a reference and plot the result as a function of the wavelength. There is the option to provide a background measurement to subtract both for the signal and the reference.
-The script is now divided into two files: one for the main and variable inizialization and another one for the functions.
-All the functions are now self-sustaining: everything is more flexible and definetly more ordered.
-Added the possibilities to change the x unit and the plot type.
+There is a certain degree of customization in the plot properties: possibility to add a second comparison set of data (only for the non fft case) and change the units to show in the plot as well as the plot type.
+The program can be execurted as a main or from another program.
 
-The script can be used inserting the asked parameters (file positions, figure properties...) and making it run as main.
+Although not implemented yet the fitting function provided is built around the lmfit package (http://cars9.uchicago.edu/software/python/lmfit/index.html).
 
-Near-future improvements: Normalization of the data (function built, testing and implementation not yet) Peak Fitting.
+Near future improvements: Normalization, peak finding, peak fitting (functions built not fully tested yet!)
 
-Not-so-near-future improvements: allow variables initialization from the command line, insert different plotting possibility (ex. plotting also the non-normalized data)
+not-so-near future improvements: implementtion of a fit also for the full spectrum (not only for peaks), inizialization from command line
